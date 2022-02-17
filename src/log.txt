@@ -1,0 +1,23 @@
+
+2012 November 5
+
+Verified that when the program is built using GCC 4.5.2 on
+a x86_64 architecture, processing files larger than 2^32
+bytes produces correct results.
+
+Verified that the same results are produced when compiled
+with -O3 and -g options.
+
+Corrected a (bogus) uninitialised variable warning from
+GCC 4.5.2 in -Wall mode.
+
+2022 February 17
+
+Cleaned up the "check" target in the Makefile, now using the
+Web page's PNG title image as the test file.
+
+Version 1.4, re-organised for publication on GitHub.  Removed
+the pre-built Win32 executable, as it has not been tested for more
+than a decade and I no longer support legacy proprietary platforms.
+The WIN32 code remains in the source if somebody wants to try to
+get it to work.
