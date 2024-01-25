@@ -127,7 +127,7 @@ information density of a file is of interest.
 
 <h3>SYNOPSIS</h3>
 
-     <b>ent</b> [ <b>-b -c -f -t -u</b> ] [ <i>infile</i> ]
+     <b>ent</b> [ <b>-b -c -f -p -t -u</b> ] [ <i>infile</i> ]
 
 <h3>DESCRIPTION</h3>
 
@@ -304,6 +304,12 @@ The values calculated are as follows:
                <a href="#Terse">Terse Mode Output Format</a>
                below for additional details.</dd>
 
+<dt><b>-p</b></dt>  <dd>Used in conjunction with <b>-t</b> to
+               include the Chi-squared p-value in the terse
+               output (as decimal).  See
+               <a href="#Terse">Terse Mode Output Format</a>
+               below for additional details.</dd>
+
 <dt><b>-u</b></dt>  <dd>Print how-to-call information.</dd>
 </dl>
 
@@ -340,7 +346,20 @@ numerical values for the quantities named in the type 0
 column title record.  If the <b>-b</b> option is specified, the second
 field of the type 0 record will be &ldquo;<tt>File-bits</tt>&rdquo;, and
 the <em>file_length</em> field in type 1 record will be given
-in bits instead of bytes.  If the <b>-c</b> option is specified,
+in bits instead of bytes.
+</p>
+
+<p>
+Specifying <b>-p</b> in conjunction with <b>-t</b> includes the Chi-squared p-value in the CSV output. Note that it is provided as decimal, not as a percentage. When specified, the output becomes:
+</p>
+
+<pre>
+0,File-bytes,Entropy,Chi-square,Chi-square-p-val,Mean,Monte-Carlo-Pi,Serial-Correlation
+1,<em>file_length</em>,<em>entropy</em>,<em>chi_square</em>,<em>chi_square_p_val</em>,<em>mean</em>,<em>Pi_value</em>,<em>correlation</em>
+</pre>
+
+<p>
+If the <b>-c</b> option is specified,
 additional records are appended to the terse mode output which
 contain the character counts:
 </p>
