@@ -59,6 +59,7 @@ static void help(void)
         printf("\n                   -c   Print occurrence counts");
         printf("\n                   -f   Fold upper to lower case letters");
         printf("\n                   -t   Terse output in CSV format");
+        printf("\n                   -p   Include Chi-square p-value in terse output (as decimal)");
         printf("\n                   -u   Print this message\n");
         printf("\nVersion " VERSION);
         printf("\nBy John Walker");
@@ -107,9 +108,10 @@ int main(int argc, char *argv[])
         int counts = FALSE,           /* Print character counts */
             fold = FALSE,             /* Fold upper to lower */
             binary = FALSE,           /* Treat input as a bitstream */
-            terse = FALSE;            /* Terse (CSV format) output */
+            terse = FALSE,            /* Terse (CSV format) output */
+            csp = FALSE;              /* Terse includes Chi^2 p-value */
 
-        while ((opt = getopt(argc, argv, "bcftuv?BCFTUV")) != -1) {
+        while ((opt = getopt(argc, argv, "bcfptuv?BCFPTUV")) != -1) {
             switch (toISOlower(opt)) {
                  case 'b':
                     binary = TRUE;
@@ -121,6 +123,10 @@ int main(int argc, char *argv[])
 
                  case 'f':
                     fold = TRUE;
+                    break;
+
+                 case 'p':
+                    csp = TRUE;
                     break;
 
                  case 't':
@@ -200,21 +206,30 @@ int main(int argc, char *argv[])
         }
         fclose(fp);
 
-        /* Complete calculation and return sequence metrics */
+        /* Complete calculation */
 
         rt_end(&ent, &chisq, &mean, &montepi, &scc);
-
-        if (terse) {
-           printf("0,File-%ss,Entropy,Chi-square,Mean,Monte-Carlo-Pi,Serial-Correlation\n",
-              binary ? "bit" : "byte");
-           printf("1,%ld,%f,%f,%f,%f,%f\n",
-              totalc, ent, chisq, mean, montepi, scc);
-        }
 
         /* Calculate probability of observed distribution occurring from
            the results of the Chi-Square test */
 
         chip = pochisq(chisq, (binary ? 1 : 255));
+
+        /* Return sequence metrics */
+
+        if (terse) {
+            if (csp) {
+                printf("0,File-%ss,Entropy,Chi-square,Chi-square-p-val,Mean,Monte-Carlo-Pi,Serial-Correlation\n",
+                   binary ? "bit" : "byte");
+                printf("1,%ld,%f,%f,%f,%f,%f,%f\n",
+                   totalc, ent, chisq, chip, mean, montepi, scc);
+            } else {
+                printf("0,File-%ss,Entropy,Chi-square,Mean,Monte-Carlo-Pi,Serial-Correlation\n",
+                   binary ? "bit" : "byte");
+                printf("1,%ld,%f,%f,%f,%f,%f\n",
+                   totalc, ent, chisq, mean, montepi, scc);
+            }
+        }
 
         /* Print bin counts if requested */
 
